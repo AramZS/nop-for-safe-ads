@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../cookie-handler.js"></script>
+		<script type="text/javascript">
+			document.cookie = 'foo=bar';
+			window.localStorage.setItem('foo', 'bar');
+			window.sessionStorage.setItem('foo', 'bar');
+		</script>
+	</head>
+	<body>
+		<p>Hello?</p>
+		<iframe src="./inside-iframe.html" >
+	</body>
+
+</html>
