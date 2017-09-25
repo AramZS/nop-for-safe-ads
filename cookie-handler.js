@@ -6,7 +6,7 @@ if ((typeof navigator != 'undefined') && (typeof navigator.doNotTrack != 'undefi
 }
 // convert to bool
 DNT = !!+DNT;
-//if (DNT){
+if (DNT){
     var newCookie = document.cookie;
     //var newLocalStorage = window.localStorage;
     //var newSessionStorage = window.sessionStorage;
@@ -60,4 +60,4 @@ DNT = !!+DNT;
              _getItem.apply(this, arguments);
         }
     }
-//}
+}
