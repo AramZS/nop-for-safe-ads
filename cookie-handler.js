@@ -4,6 +4,7 @@ if ((typeof navigator != 'undefined') && (typeof navigator.doNotTrack != 'undefi
         DNT = navigator.doNotTrack;
     }
 }
+// Try hijacking window.top or window.top.location ?
 // convert to bool
 DNT = !!+DNT;
 if (DNT){
