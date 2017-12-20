@@ -1,5 +1,5 @@
 var MAXIMUM_INTERVAL =  (1000*60)*1;
-function activateNOPs(){
+function activateBodyNOPs(){
 	if ( Object.getOwnPropertyDescriptor(document.documentElement.style, 'overflow').configurable ){
 		//document.documentElement.style = document.documentElement.style || {}; document.documentElement.style.overflow = "auto";
 		Object.defineProperty(
@@ -26,7 +26,8 @@ function activateNOPs(){
 		console.log("nop", "Can't freeze documentElement style", "");
 		window.setInterval(
 			function(){ document.documentElement.style.overflow = 'auto'; },
-			60
+			60,
+			true
 		);
 	}
 	//Object.freeze(document.documentElement.style); document.getElementsByTagName('body')[0].style.overflow = "auto";
@@ -69,16 +70,28 @@ function activateNOPs(){
 			}
 		);
 	}
+}
 
-	var setIntervalOrig = window.setInterval;
-	window.setInterval = function(callback, intervalTime, override){
-		var intervalID = setIntervalOrig(callback, intervalTime);
-		if (typeof override === 'undefined' || !override){
-			window.setTimeout(function(){
-				window.clearInterval(intervalID);
-				console.log('setInterval maximum of '+MAXIMUM_INTERVAL+' reached on interval ID:', intervalID);
-			}, MAXIMUM_INTERVAL);
-		}
-		return intervalID;
+var setIntervalOrig = window.setInterval;
+window.setInterval = function(callback, intervalTime, override){
+	var intervalID = setIntervalOrig(callback, intervalTime);
+	if (typeof override === 'undefined' || !override){
+		window.setTimeout(function(){
+			window.clearInterval(intervalID);
+			console.log('setInterval maximum of '+MAXIMUM_INTERVAL+' reached on interval ID:', intervalID);
+		}, MAXIMUM_INTERVAL);
 	}
+	return intervalID;
+}
+
+var setTimeoutOrig = window.setTimeout;
+window.setInterval = function(callback, intervalTime, override){
+	var intervalID = setIntervalOrig(callback, intervalTime);
+	if (typeof override === 'undefined' || !override){
+		window.setTimeout(function(){
+			window.clearInterval(intervalID);
+			console.log('setInterval maximum of '+MAXIMUM_INTERVAL+' reached on interval ID:', intervalID);
+		}, MAXIMUM_INTERVAL);
+	}
+	return intervalID;
 }
