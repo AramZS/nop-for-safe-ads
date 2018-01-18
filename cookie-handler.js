@@ -3,28 +3,55 @@ function DNTCompliance() {
 	//var newLocalStorage = window.localStorage;
 	//var newSessionStorage = window.sessionStorage;
 	window.cookieChecker = false;
-	Object.defineProperty(
-		document,
-		"cookie", {
-			set: function (val) {
-				if (window.cookieChecker) {
-					//newCookie = val;
+	//https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/cookies/onChanged
+	if ((!document.hasOwnProperty('cookie')) || (document.hasOwnProperty('cookie') && Object.getOwnPropertyDescriptor(document, 'cookie').configurable)) {
+		Object.defineProperty(
+			document,
+			"cookie", {
+				set: function (val) {
+					if (window.cookieChecker) {
+						//newCookie = val;
+					}
+					console.log("NOPed on cookies", val);
+					return true;
+				},
+				get: function () {
+					if (window.cookieChecker) {
+						//return newCookie;
+					}
+					return '';
+				},
+				//writable: false,
+				configurable: false,
+				enumerable: true,
+				//value: 'auto'
+			}
+		);
+	} else if (typeof browser !== 'undefined' && typeof browser.cookies !== 'undefined') {
+		browser.cookies.onChanged.addListener(function (changeInfo) {
+			console.log('Cookie changed: ' +
+				'\n * Cookie: ' + JSON.stringify(changeInfo.cookie) +
+				'\n * Cause: ' + changeInfo.cause +
+				'\n * Removed: ' + changeInfo.removed);
+		});
+	} else {
+		window.setInterval(
+			function () {
+				if (document.cookie.length > 0) {
+					console.log('kill cookie', document.cookie);
+					var cookies = document.cookie.split(';');
+					cookies.forEach(function (value, index, array) {
+						var singleCookie = value.split('=');
+						console.log('singleCookie', singleCookie[0]);
+						document.cookie = encodeURIComponent(singleCookie[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + "domain=" + location.origin.replace(/htt(p|ps):\/\//i, '') + "path=/";
+					});
 				}
-				console.log("NOPed on cookies", val);
-				return true;
 			},
-			get: function () {
-				if (window.cookieChecker) {
-					//return newCookie;
-				}
-				return '';
-			},
-			//writable: false,
-			configurable: false,
-			enumerable: true,
-			//value: 'auto'
-		}
-	);
+			120,
+			true
+		);
+		console.log('No access to cookie property');
+	}
 	var _setItem = Storage.prototype.setItem;
 	var _getItem = Storage.prototype.setItem;
 	//https://stackoverflow.com/questions/13612643/is-it-possible-to-override-local-storage-and-session-storage-separately-in-html5
