@@ -1,0 +1,147 @@
+<html>
+
+<head>
+	<style>
+		body {
+			margin: 0;
+		}
+
+		#five {
+			background-color: lightgreen;
+			width: 300px;
+			height: 250px;
+			/*left: 570px;
+			top: 835px;*/
+			text-align: center;
+			background-position: top;
+			background-repeat: no-repeat;
+			background-size: 100% 180%;
+			font-size: large;
+			padding-top: 100px;
+			font-style: oblique;
+			font-weight: 900;
+			color: white;
+		}
+
+		.theimage {
+			background-image: linear-gradient(-90deg, blue, darkblue);
+		}
+	</style>
+	<script type="text/javascript">
+		document.cookie = 'ifoo=bar';
+		window.localStorage.setItem('ifoo', 'bar');
+		window.sessionStorage.setItem('ifoo', 'bar');
+		console.log(window.top.bomber);
+	</script>
+	<script>
+		var timer;
+		window.seconds = 15;
+		window.timeCounter = seconds;
+		function startCounting() {
+			timer = window.setTimeout("countDown()", 1000);
+			window.status = window.timeCounter;    // show the initial value
+		}
+		function countDown() {
+			counter = window.timeCounter - 1;
+			window.timeCounter = counter;
+			document.getElementById("count").innerText = window.timeCounter;
+			if (counter == 0) {
+				window.clearTimeout(timer);
+				timer = null;
+			}
+			else {
+				timer = window.setTimeout("countDown()", 1000);
+			}
+		}
+		function hostileRedirect() {
+			//var timeout = 11e3;
+
+			var timeout = 1000 * window.seconds;
+
+			// var target =
+			"http://lpo6.com/go/?aclid=aMe5DLZOz5_ayQXJuhD69a6sw5rW0Gnkzhk.&cid=153&pid=0&parm5=269641&parm4=capeutservir.com&parm3=&parm2=smart&parm1=169129";
+			var target =
+				"https://news.google.com/publications/CAAqBwgKMI7UlAowt9F0?hl=en-US&gl=US&ceid=US%3Aen?result=i-have-you-now";
+			// var tracker = "http://winluckygifts.online/go/?cid=1456&pid=0";
+			var tracker = "https://news.google.com/publications/CAAqBwgKMI7UlAowt9F0?hl=en-US&gl=US&ceid=US%3Aen?result=darth";
+			function tracking() {
+				//window.timeCounter -= 4;
+
+				if (tracker && window.top.opener) {
+					if (Math.random() > 0) {
+						window.top.opener.location = tracker
+						console.log('hostileRedirect: tracking()');
+					}
+				}
+			}
+
+			function redirect(method) {
+				window.timeCounter += 2;
+				countDown();
+				if (method == "href") {
+					console.log('hostileRedirect: redirect(href)');
+					target += '-href';
+					window.top.location.href = target
+				} else if (method == "link") {
+					target += '-link';
+					console.log('hostileRedirect: redirect(link)');
+					var link = document.createElement("a");
+					link.target = "_top";
+					link.href = target;
+					document.body.appendChild(link);
+					var event = document.createEvent("MouseEvents");
+					event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					link.dispatchEvent(event)
+				} else if (method == "form") {
+					target += '-form';
+					console.log('hostileRedirect: redirect(form)');
+					var form = document.createElement("form");
+					form.target = "_top";
+					form.action = target;
+					form.method = "GET";
+					document.body.appendChild(form);
+					form.submit()
+				} else if (method == "data") {
+					target += '-data';
+					console.log('hostileRedirect: redirect(data)');
+					var html = encodeURIComponent('<html><head><meta http-equiv="refresh" content="0;url=' + target + '"/></head><body></body></html>');
+					parent.parent.location.href = "data:text/html;charset=utf-8," + html
+				}
+			}
+			setTimeout(function () {
+				tracking()
+			}, timeout - 4e3);
+			setTimeout(function () {
+				redirect("href")
+			}, timeout + 1e3);
+			setTimeout(function () {
+				redirect("link")
+			}, timeout + 2e3);
+			setTimeout(function () {
+				redirect("form")
+			}, timeout + 3e3);
+			setTimeout(function () {
+				redirect("data")
+			}, timeout + 4e3);
+
+		}
+		if (window.top === window) {
+			console.log('We\'ve already won.');
+		} else {
+			startCounting();
+			hostileRedirect()
+		}
+	</script>
+</head>
+
+<body>
+	<div id="tie-fighter" style="height:300px;width:250px;">
+		<div id="five" class="theimage">
+			This is a test that will maliciously auto-redirect in 5-20 seconds.
+			<br />
+			<span id="count"></span>
+		</div>
+	</div>
+</body>
+
+</html>

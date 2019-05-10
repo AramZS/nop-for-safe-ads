@@ -1,0 +1,72 @@
+<html>
+
+<head>
+</head>
+
+<body>
+	<p id="hello">Hello? </p>
+
+	<div id="testContainer">
+		<script>
+			var config = { childList: true, subtree: true };
+			window.cap = 0;
+			var primaryObserverCallback = function (mutationsList, observer) {
+
+				if (window.cap < 2000) {
+					console.log('inside Mutation scan, count start', window.adSafeDetails.observationCount, mutationsList.length) // mutationsList);
+					for (var i = 0; i < mutationsList.length; i++) {
+						// for (var mutation of mutationsList) {
+						var mutation = mutationsList[i];
+
+						if (mutation.type == 'childList') {
+							// console.log('childList mutation', mutation);
+							for (var i = 0; i < mutation.addedNodes.length; i++) {
+								var aNode = mutation.addedNodes[i];
+								// for (var aNode of mutation.addedNodes) {
+								// console.log('jsi', 'aNode:', aNode);
+
+								var equalityOfSettings = false;
+								var f = document.createElement('span');
+								f.innerHTML = 'f';
+								document.getElementById('testContainer').appendChild(f);
+								// window.document.body.appendChild(f);
+								window.cap++;
+								if (window.cap > 2000) {
+									console.log('Disconnect from test');
+									eval('1 = 0');
+									// throw 'Error from the inside';
+									window.primaryObserver.disconnect();
+									observer.disconnect();
+									break;
+									// MutationObserver.disconnect();
+									// debugger;
+									// throw new Error('on page Javascript has exceeded safe operations counts');
+								}
+
+							}
+						}
+						// }
+					}
+				}
+			}
+			window.setTimeout(() => {
+				document.getElementById('hello').innerHTML += window.adSafeDetails.ver;
+				window.primaryObserver = new MutationObserver(primaryObserverCallback);
+				window.primaryObserver.observe(window.document, config);
+				var f = document.createElement('span');
+				f.innerHTML = 'f';
+				document.getElementById('testContainer').appendChild(f);
+				document.getElementById('testContainer').appendChild(f);
+				document.getElementById('testContainer').appendChild(f);
+				document.getElementById('testContainer').appendChild(f);
+				document.getElementById('testContainer').appendChild(f);
+			}, 5000)
+			window.setTimeout(() => {
+				window.timerForStop = true;
+				window.stop();
+			}, 15000)
+		</script>
+	</div>
+</body>
+
+</html>
